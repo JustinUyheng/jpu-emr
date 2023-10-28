@@ -28,7 +28,7 @@ export default function App() {
 				<Stack.Screen
 					name="Registration"
 					component={Registration}
-					options={{ title: "Add a patient" }}
+					options={{ title: "Patient Details" }}
 				/>
 			</Stack.Navigator>
 		</NavigationContainer>

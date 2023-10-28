@@ -1,4 +1,4 @@
-import { useState, useEffect, useDebugValue } from "react";
+import { useState, useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
 import * as SQLite from "expo-sqlite";
 import { View, StyleSheet, TextInput, Text, Button } from "react-native";
