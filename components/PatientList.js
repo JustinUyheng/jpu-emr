@@ -5,8 +5,11 @@ import PatientListItem from "./PatientListItem";
 const PatientList = ({ patients, navigation }) => {
 	const [searchTerm, setSearchTerm] = useState("");
 
-	const pressHandler = (patientId) => {
-		navigation.navigate("Existing Patient", { patientId: patientId });
+	const pressHandler = (patientId, patientName) => {
+		navigation.navigate("Existing Patient", {
+			patientId: patientId,
+			patientName: patientName,
+		});
 	};
 
 	const filteredPatients = patients.filter((patient) => {
@@ -26,7 +29,7 @@ const PatientList = ({ patients, navigation }) => {
 					<PatientListItem
 						name={patient.name}
 						contactNumber={patient.contact_number}
-						pressHandler={() => pressHandler(patient.id)}
+						pressHandler={() => pressHandler(patient.id, patient.name)}
 					/>
 				)}
 				keyExtractor={(patient) => String(patient.id)}

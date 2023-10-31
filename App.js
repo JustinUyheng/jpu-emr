@@ -29,12 +29,14 @@ export default function App() {
 				<Stack.Screen
 					name="Registration"
 					component={Registration}
-					options={{ title: "Patient Details" }}
+					options={{ title: "New Patient Details" }}
 				/>
 				<Stack.Screen
 					name="Existing Patient"
 					component={ExistingPatient}
-					options={{ title: "Patient Details" }}
+					options={({ route }) => ({
+						title: `${route.params.patientName}'s Details`,
+					})}
 				/>
 			</Stack.Navigator>
 		</NavigationContainer>

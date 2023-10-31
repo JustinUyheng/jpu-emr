@@ -73,17 +73,22 @@ const Home = ({ navigation }) => {
 		>
 			<View style={styles.container}>
 				<StatusBar style="auto" />
-				<View style={styles.patientsWrapper}>
-					<Text style={styles.sectionTitle}>My Patients</Text>
-					<View style={styles.list}>
-						<PatientList patients={patients} navigation={navigation} />
+				<View style={styles.contentWrapper}>
+					<View>
+						<Text style={styles.sectionTitle}>My Patients</Text>
+						<View style={styles.list}>
+							<PatientList patients={patients} navigation={navigation} />
+						</View>
+					</View>
+					<View>
+						<Button
+							title="Register a patient"
+							style={styles.registrationButton}
+							onPress={() => navigation.navigate("Registration")}
+						/>
 					</View>
 				</View>
 				{/* <Button title="Reset" onPress={handleDrop} /> */}
-				<Button
-					title="Register a patient"
-					onPress={() => navigation.navigate("Registration")}
-				/>
 			</View>
 		</TouchableWithoutFeedback>
 	);
@@ -94,8 +99,9 @@ const styles = StyleSheet.create({
 		flex: 1,
 		backgroundColor: "#e8eaed",
 	},
-	patientsWrapper: {
+	contentWrapper: {
 		flex: 1,
+		justifyContent: "space-between",
 		paddingTop: 40,
 		paddingHorizontal: 20,
 	},
@@ -109,6 +115,9 @@ const styles = StyleSheet.create({
 		marginVertical: 8,
 		marginHorizontal: 16,
 		borderWidth: 1,
+	},
+	registrationButton: {
+		width: "100%",
 	},
 });
 

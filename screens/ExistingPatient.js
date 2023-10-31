@@ -15,7 +15,7 @@ import {
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 const ExistingPatient = ({ route, navigation }) => {
-	const { patientId } = route.params;
+	const { patientId, patientName } = route.params;
 	const [modalVisible, setModalVisible] = useState(false);
 	const db = SQLite.openDatabase("example.db");
 	const [isLoading, setIsLoading] = useState(true);
