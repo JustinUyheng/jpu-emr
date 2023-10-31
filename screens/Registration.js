@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react";
 import * as SQLite from "expo-sqlite";
 import {
-	StyleSheet,
-	View,
 	Button,
 	Keyboard,
-	KeyboardAvoidingView,
+	StyleSheet,
 	TextInput,
 	TouchableWithoutFeedback,
+	View,
 } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 const Registration = ({ navigation }) => {
 	const db = SQLite.openDatabase("example.db");
@@ -175,10 +175,7 @@ const Registration = ({ navigation }) => {
 	};
 
 	return (
-		<KeyboardAvoidingView
-			behavior={Platform.OS === "ios" ? "padding" : "height"}
-			style={styles.container}
-		>
+		<KeyboardAwareScrollView style={styles.container}>
 			<TouchableWithoutFeedback
 				onPress={() => {
 					Keyboard.dismiss();
@@ -196,12 +193,14 @@ const Registration = ({ navigation }) => {
 						value={currentAge}
 						placeholder="Age"
 						onChangeText={setCurrentAge}
+						inputMode="numeric"
 					/>
 					<TextInput
 						style={styles.input}
 						value={currentContactNumber}
 						placeholder="Contact Number"
 						onChangeText={setCurrentContactNumber}
+						inputMode="tel"
 					/>
 					<TextInput
 						style={styles.input}
@@ -251,7 +250,7 @@ const Registration = ({ navigation }) => {
 					<Button title="Save" onPress={handleSave} />
 				</View>
 			</TouchableWithoutFeedback>
-		</KeyboardAvoidingView>
+		</KeyboardAwareScrollView>
 	);
 };
 

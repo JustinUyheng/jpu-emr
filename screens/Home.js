@@ -11,16 +11,12 @@ import {
 	TouchableWithoutFeedback,
 	Keyboard,
 } from "react-native";
-import PatientListItem from "../components/PatientListItem";
-import PatientForm from "../components/PatientForm";
 import PatientList from "../components/PatientList";
-import PatientDatabase from "../components/PatientDatabase";
 
 const Home = ({ navigation }) => {
 	const db = SQLite.openDatabase("example.db");
 	const [isLoading, setIsLoading] = useState(true);
 	const [patients, setPatients] = useState([]);
-	const [currentName, setCurrentName] = useState(undefined);
 
 	useEffect(() => {
 		db.transaction((tx) => {
@@ -59,16 +55,6 @@ const Home = ({ navigation }) => {
 		);
 	}
 
-	const showPatients = () => {
-		return patients.map((patient, index) => {
-			return (
-				<View key={index} style={styles.patient}>
-					<Text>Name: {patient.name}</Text>
-				</View>
-			);
-		});
-	};
-
 	const handleDrop = () => {
 		db.transaction((tx) => {
 			tx.executeSql(
@@ -78,6 +64,7 @@ const Home = ({ navigation }) => {
 				(txObj, error) => console.log(error)
 			);
 		});
+		console.log("Dropped db");
 	};
 
 	return (
@@ -90,9 +77,6 @@ const Home = ({ navigation }) => {
 				<StatusBar style="auto" />
 				<View style={styles.patientsWrapper}>
 					<Text style={styles.sectionTitle}>My Patients</Text>
-
-					{/* <PatientForm submitHandler={submitHandler} /> */}
-					{/* <View style={styles.list}>{showPatients()}</View> */}
 					<View style={styles.list}>
 						<PatientList patients={patients} navigation={navigation} />
 					</View>

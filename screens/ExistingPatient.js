@@ -13,6 +13,7 @@ import {
 	TextInput,
 	TouchableWithoutFeedback,
 } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 const ExistingPatient = ({ route, navigation }) => {
 	const { patientId } = route.params;
@@ -20,7 +21,7 @@ const ExistingPatient = ({ route, navigation }) => {
 	const db = SQLite.openDatabase("example.db");
 	const [isLoading, setIsLoading] = useState(true);
 	const [patients, setPatients] = useState([]);
-	const [patient, setPatient] = useState([]);
+	const [patient, setPatient] = useState({});
 	const [currentName, setCurrentName] = useState(undefined);
 	const [currentAge, setCurrentAge] = useState(undefined);
 	const [currentContactNumber, setCurrentContactNumber] = useState(undefined);
@@ -31,22 +32,6 @@ const ExistingPatient = ({ route, navigation }) => {
 	const [currentTreatmentPlan, setCurrentTreatmentPlan] = useState(undefined);
 
 	useEffect(() => {
-		db.transaction((tx) => {
-			tx.executeSql(
-				`CREATE TABLE IF NOT EXISTS patients (
-					id INTEGER PRIMARY KEY AUTOINCREMENT, 
-					name TEXT, 
-					age INTEGER, 
-					contact_number TEXT, 
-					allergy_history TEXT, 
-					medical_history TEXT,
-					medication TEXT,
-					problem TEXT,
-					treatment_plan TEXT
-				)`
-			);
-		});
-
 		db.transaction((tx) => {
 			tx.executeSql(
 				"SELECT * FROM patients",
@@ -60,25 +45,20 @@ const ExistingPatient = ({ route, navigation }) => {
 			tx.executeSql(
 				"SELECT * FROM patients WHERE id = ?",
 				[patientId],
-				(txObj, resultSet) => setPatient(resultSet.rows._array),
+				(txObj, resultSet) => {
+					const currentPatient = resultSet.rows._array[0];
+					setPatient(currentPatient);
+					setCurrentName(currentPatient.name);
+					setCurrentAge(currentPatient.age?.toString());
+					setCurrentContactNumber(currentPatient.contact_number?.toString());
+					setCurrentAllergyHistory(currentPatient.allergy_history);
+					setCurrentMedicalHistory(currentPatient.medical_history);
+					setCurrentMedication(currentPatient.medication);
+					setCurrentProblem(currentPatient.currentProblem);
+					setCurrentTreatmentPlan(currentPatient.treatment_plan);
+				},
 				(txObj, error) => console.log(error)
 			);
-
-			const currentPatient = patient[0];
-
-			if (currentPatient) {
-				setCurrentName(currentPatient.name);
-				setCurrentAge(currentPatient.age);
-				setCurrentContactNumber(currentPatient.contact_number);
-				setCurrentAllergyHistory(currentPatient.allergy_history);
-				setCurrentMedicalHistory(currentPatient.medical_history);
-				setCurrentMedication(currentPatient.medication);
-				setCurrentProblem(currentPatient.currentProblem);
-				setCurrentTreatmentPlan(currentPatient.treatment_plan);
-			}
-
-			console.log(patientId);
-			console.log(patient[0]);
 
 			setIsLoading(false);
 		});
@@ -157,7 +137,17 @@ const ExistingPatient = ({ route, navigation }) => {
 					problem = ?,
 					treatment_plan = ?
 					WHERE id = ?`,
-				[currentName, id],
+				[
+					currentName,
+					currentAge,
+					currentContactNumber,
+					currentAllergyHistory,
+					currentMedicalHistory,
+					currentMedication,
+					currentProblem,
+					currentTreatmentPlan,
+					id,
+				],
 				(txObj, resultSet) => {
 					if (resultSet.rowsAffected > 0) {
 						let existingPatients = [...patients];
@@ -177,14 +167,14 @@ const ExistingPatient = ({ route, navigation }) => {
 						existingPatients[indexToUpdate].treatment_plan =
 							currentTreatmentPlan;
 						setPatients(existingPatients);
-						setCurrentName(undefined);
-						setCurrentAge(undefined);
-						setCurrentContactNumber(undefined);
-						setCurrentAllergyHistory(undefined);
-						setCurrentMedicalHistory(undefined);
-						setCurrentMedication(undefined);
-						setCurrentProblem(undefined);
-						setCurrentTreatmentPlan(undefined);
+						// setCurrentName(undefined);
+						// setCurrentAge(undefined);
+						// setCurrentContactNumber(undefined);
+						// setCurrentAllergyHistory(undefined);
+						// setCurrentMedicalHistory(undefined);
+						// setCurrentMedication(undefined);
+						// setCurrentProblem(undefined);
+						// setCurrentTreatmentPlan(undefined);
 					}
 				},
 				(txObj, error) => console.log(error)
@@ -203,119 +193,120 @@ const ExistingPatient = ({ route, navigation }) => {
 	};
 
 	return (
-		<KeyboardAvoidingView
-			behavior={Platform.OS === "ios" ? "padding" : "height"}
-			style={styles.container}
-		>
-			<TouchableWithoutFeedback
-				onPress={() => {
-					Keyboard.dismiss();
-				}}
-			>
-				<View style={styles.patientsWrapper}>
-					<TextInput
-						style={styles.input}
-						value={currentName}
-						placeholder="Name"
-						onChangeText={setCurrentName}
-					/>
-					<TextInput
-						style={styles.input}
-						value={currentAge}
-						placeholder="Age"
-						onChangeText={setCurrentAge}
-					/>
-					<TextInput
-						style={styles.input}
-						value={currentContactNumber}
-						placeholder="Contact Number"
-						onChangeText={setCurrentContactNumber}
-					/>
-					<TextInput
-						style={styles.input}
-						editable
-						multiline
-						numberOfLines={3}
-						value={currentAllergyHistory}
-						placeholder="Allergy History"
-						onChangeText={setCurrentAllergyHistory}
-					/>
-					<TextInput
-						style={styles.input}
-						editable
-						multiline
-						numberOfLines={3}
-						value={currentMedicalHistory}
-						placeholder="Medical History"
-						onChangeText={setCurrentMedicalHistory}
-					/>
-					<TextInput
-						style={styles.input}
-						editable
-						multiline
-						numberOfLines={3}
-						value={currentMedication}
-						placeholder="Current Medication"
-						onChangeText={setCurrentMedication}
-					/>
-					<TextInput
-						style={styles.input}
-						editable
-						multiline
-						numberOfLines={3}
-						value={currentProblem}
-						placeholder="Current Problem"
-						onChangeText={setCurrentProblem}
-					/>
-					<TextInput
-						style={styles.input}
-						editable
-						multiline
-						numberOfLines={3}
-						value={currentTreatmentPlan}
-						placeholder="Treatment Plan"
-						onChangeText={setCurrentTreatmentPlan}
-					/>
-					<Button title="Save" onPress={() => handleSave(patientId)} />
-					<Button
-						title="Delete"
-						onPress={() => setModalVisible(true)}
-						color="red"
-					/>
-					<Modal
-						animationType="slide"
-						transparent={true}
-						visible={modalVisible}
-						onRequestClose={() => {
-							Alert.alert("Modal has been closed.");
-							setModalVisible(!modalVisible);
+		<KeyboardAwareScrollView style={styles.container}>
+			{!isLoading && (
+				<View>
+					<TouchableWithoutFeedback
+						onPress={() => {
+							Keyboard.dismiss();
 						}}
 					>
-						<View style={styles.centeredView}>
-							<View style={styles.modalView}>
-								<Text style={styles.modalText}>
-									Are you sure you want to delete this patient record?
-								</Text>
-								<View style={styles.modalButtons}>
-									<Pressable
-										style={[styles.button, styles.buttonCancel]}
-										onPress={() => setModalVisible(!modalVisible)}
-									>
-										<Text style={styles.textStyle}>Cancel</Text>
-									</Pressable>
-									<Pressable
-										style={[styles.button, styles.buttonConfirm]}
-										onPress={() => handleDelete(patientId)}
-									>
-										<Text style={styles.textStyle}>Confirm</Text>
-									</Pressable>
+						<View style={styles.patientsWrapper}>
+							<TextInput
+								style={styles.input}
+								value={currentName}
+								placeholder="Name"
+								onChangeText={setCurrentName}
+							/>
+							<TextInput
+								style={styles.input}
+								value={currentAge}
+								placeholder="Age"
+								onChangeText={setCurrentAge}
+							/>
+							<TextInput
+								style={styles.input}
+								value={currentContactNumber}
+								placeholder="Contact Number"
+								onChangeText={setCurrentContactNumber}
+							/>
+							<TextInput
+								style={styles.input}
+								editable
+								multiline
+								numberOfLines={3}
+								value={currentAllergyHistory}
+								placeholder="Allergy History"
+								onChangeText={setCurrentAllergyHistory}
+							/>
+							<TextInput
+								style={styles.input}
+								editable
+								multiline
+								numberOfLines={3}
+								value={currentMedicalHistory}
+								placeholder="Medical History"
+								onChangeText={setCurrentMedicalHistory}
+							/>
+							<TextInput
+								style={styles.input}
+								editable
+								multiline
+								numberOfLines={3}
+								value={currentMedication}
+								placeholder="Current Medication"
+								onChangeText={setCurrentMedication}
+							/>
+							<TextInput
+								style={styles.input}
+								editable
+								multiline
+								numberOfLines={3}
+								value={currentProblem}
+								placeholder="Current Problem"
+								onChangeText={setCurrentProblem}
+							/>
+							<TextInput
+								style={styles.input}
+								editable
+								multiline
+								numberOfLines={3}
+								value={currentTreatmentPlan}
+								placeholder="Treatment Plan"
+								onChangeText={setCurrentTreatmentPlan}
+							/>
+							<Button title="Save" onPress={() => handleSave(patientId)} />
+							<Button
+								title="Delete"
+								onPress={() => setModalVisible(true)}
+								color="red"
+							/>
+							<Modal
+								animationType="slide"
+								transparent={true}
+								visible={modalVisible}
+								onRequestClose={() => {
+									Alert.alert("Modal has been closed.");
+									setModalVisible(!modalVisible);
+								}}
+							>
+								<View style={styles.centeredView}>
+									<View style={styles.modalView}>
+										<Text style={styles.modalText}>
+											Are you sure you want to delete this patient record?
+										</Text>
+										<View style={styles.modalButtons}>
+											<Pressable
+												style={[styles.button, styles.buttonCancel]}
+												onPress={() => setModalVisible(!modalVisible)}
+											>
+												<Text style={styles.textStyle}>Cancel</Text>
+											</Pressable>
+											<Pressable
+												style={[styles.button, styles.buttonConfirm]}
+												onPress={() => handleDelete(patientId)}
+											>
+												<Text style={styles.textStyle}>Confirm</Text>
+											</Pressable>
+										</View>
+									</View>
 								</View>
-							</View>
+							</Modal>
 						</View>
-					</Modal>
+					</TouchableWithoutFeedback>
 				</View>
-			</TouchableWithoutFeedback>
-		</KeyboardAvoidingView>
+			)}
+		</KeyboardAwareScrollView>
 	);
 };
 
