@@ -5,6 +5,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Home from "./screens/Home";
 import Registration from "./screens/Registration";
 import PatientDatabase from "./components/PatientDatabase";
+import ExistingPatient from "./screens/ExistingPatient";
 
 const Stack = createNativeStackNavigator();
 
@@ -28,6 +29,11 @@ export default function App() {
 				<Stack.Screen
 					name="Registration"
 					component={Registration}
+					options={{ title: "Patient Details" }}
+				/>
+				<Stack.Screen
+					name="Existing Patient"
+					component={ExistingPatient}
 					options={{ title: "Patient Details" }}
 				/>
 			</Stack.Navigator>

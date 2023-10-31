@@ -3,17 +3,24 @@ import * as SQLite from "expo-sqlite";
 import {
 	StyleSheet,
 	View,
+	Alert,
 	Button,
 	Keyboard,
 	KeyboardAvoidingView,
+	Modal,
+	Pressable,
+	Text,
 	TextInput,
 	TouchableWithoutFeedback,
 } from "react-native";
 
-const Registration = ({ navigation }) => {
+const ExistingPatient = ({ route, navigation }) => {
+	const { patientId } = route.params;
+	const [modalVisible, setModalVisible] = useState(false);
 	const db = SQLite.openDatabase("example.db");
 	const [isLoading, setIsLoading] = useState(true);
 	const [patients, setPatients] = useState([]);
+	const [patient, setPatient] = useState([]);
 	const [currentName, setCurrentName] = useState(undefined);
 	const [currentAge, setCurrentAge] = useState(undefined);
 	const [currentContactNumber, setCurrentContactNumber] = useState(undefined);
@@ -47,6 +54,31 @@ const Registration = ({ navigation }) => {
 				(txObj, resultSet) => setPatients(resultSet.rows._array),
 				(txObj, error) => console.log(error)
 			);
+		});
+
+		db.transaction((tx) => {
+			tx.executeSql(
+				"SELECT * FROM patients WHERE id = ?",
+				[patientId],
+				(txObj, resultSet) => setPatient(resultSet.rows._array),
+				(txObj, error) => console.log(error)
+			);
+
+			const currentPatient = patient[0];
+
+			if (currentPatient) {
+				setCurrentName(currentPatient.name);
+				setCurrentAge(currentPatient.age);
+				setCurrentContactNumber(currentPatient.contact_number);
+				setCurrentAllergyHistory(currentPatient.allergy_history);
+				setCurrentMedicalHistory(currentPatient.medical_history);
+				setCurrentMedication(currentPatient.medication);
+				setCurrentProblem(currentPatient.currentProblem);
+				setCurrentTreatmentPlan(currentPatient.treatment_plan);
+			}
+
+			console.log(patientId);
+			console.log(patient[0]);
 
 			setIsLoading(false);
 		});
@@ -65,16 +97,7 @@ const Registration = ({ navigation }) => {
 					problem,
 					treatment_plan
 				) values (?, ?, ?, ?, ?, ?, ?, ?)`,
-				[
-					currentName,
-					currentAge,
-					currentContactNumber,
-					currentAllergyHistory,
-					currentMedicalHistory,
-					currentMedication,
-					currentProblem,
-					currentTreatmentPlan,
-				],
+				[currentName],
 				(txObj, resultSet) => {
 					let existingPatients = [...patients];
 					existingPatients.push({
@@ -169,8 +192,13 @@ const Registration = ({ navigation }) => {
 		});
 	};
 
-	const handleSave = () => {
-		addPatient();
+	const handleSave = (id) => {
+		updatePatient(id);
+		navigation.popToTop();
+	};
+
+	const handleDelete = (id) => {
+		deletePatient(id);
 		navigation.popToTop();
 	};
 
@@ -248,7 +276,43 @@ const Registration = ({ navigation }) => {
 						placeholder="Treatment Plan"
 						onChangeText={setCurrentTreatmentPlan}
 					/>
-					<Button title="Save" onPress={handleSave} />
+					<Button title="Save" onPress={() => handleSave(patientId)} />
+					<Button
+						title="Delete"
+						onPress={() => setModalVisible(true)}
+						color="red"
+					/>
+					<Modal
+						animationType="slide"
+						transparent={true}
+						visible={modalVisible}
+						onRequestClose={() => {
+							Alert.alert("Modal has been closed.");
+							setModalVisible(!modalVisible);
+						}}
+					>
+						<View style={styles.centeredView}>
+							<View style={styles.modalView}>
+								<Text style={styles.modalText}>
+									Are you sure you want to delete this patient record?
+								</Text>
+								<View style={styles.modalButtons}>
+									<Pressable
+										style={[styles.button, styles.buttonCancel]}
+										onPress={() => setModalVisible(!modalVisible)}
+									>
+										<Text style={styles.textStyle}>Cancel</Text>
+									</Pressable>
+									<Pressable
+										style={[styles.button, styles.buttonConfirm]}
+										onPress={() => handleDelete(patientId)}
+									>
+										<Text style={styles.textStyle}>Confirm</Text>
+									</Pressable>
+								</View>
+							</View>
+						</View>
+					</Modal>
 				</View>
 			</TouchableWithoutFeedback>
 		</KeyboardAvoidingView>
@@ -279,6 +343,53 @@ const styles = StyleSheet.create({
 		borderWidth: 0.8,
 		padding: 8,
 	},
+	centeredView: {
+		flex: 1,
+		justifyContent: "center",
+		alignItems: "center",
+		marginTop: 22,
+	},
+	modalView: {
+		margin: 20,
+		backgroundColor: "white",
+		borderRadius: 20,
+		padding: 35,
+		alignItems: "center",
+		shadowColor: "#000",
+		shadowOffset: {
+			width: 0,
+			height: 2,
+		},
+		shadowOpacity: 0.25,
+		shadowRadius: 4,
+		elevation: 5,
+	},
+	button: {
+		borderRadius: 20,
+		padding: 10,
+		elevation: 2,
+	},
+	buttonOpen: {
+		backgroundColor: "#F194FF",
+	},
+	modalButtons: {
+		flexDirection: "row",
+	},
+	buttonCancel: {
+		backgroundColor: "#ff0000",
+	},
+	buttonConfirm: {
+		backgroundColor: "#2196F3",
+	},
+	textStyle: {
+		color: "white",
+		fontWeight: "bold",
+		textAlign: "center",
+	},
+	modalText: {
+		marginBottom: 15,
+		textAlign: "center",
+	},
 });
 
-export default Registration;
+export default ExistingPatient;

@@ -11,7 +11,7 @@ import {
 	TouchableWithoutFeedback,
 	Keyboard,
 } from "react-native";
-import Patient from "../components/Patient";
+import PatientListItem from "../components/PatientListItem";
 import PatientForm from "../components/PatientForm";
 import PatientList from "../components/PatientList";
 import PatientDatabase from "../components/PatientDatabase";
@@ -92,7 +92,10 @@ const Home = ({ navigation }) => {
 					<Text style={styles.sectionTitle}>My Patients</Text>
 
 					{/* <PatientForm submitHandler={submitHandler} /> */}
-					<View style={styles.list}>{showPatients()}</View>
+					{/* <View style={styles.list}>{showPatients()}</View> */}
+					<View style={styles.list}>
+						<PatientList patients={patients} navigation={navigation} />
+					</View>
 				</View>
 				<Button title="Reset" onPress={handleDrop} />
 				<Button
