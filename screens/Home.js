@@ -2,14 +2,12 @@ import { useState, useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
 import * as SQLite from "expo-sqlite";
 import {
-	StyleSheet,
 	Button,
-	Text,
-	View,
-	FlatList,
-	ScrollView,
-	TouchableWithoutFeedback,
 	Keyboard,
+	StyleSheet,
+	Text,
+	TouchableWithoutFeedback,
+	View,
 } from "react-native";
 import PatientList from "../components/PatientList";
 
@@ -81,7 +79,7 @@ const Home = ({ navigation }) => {
 						<PatientList patients={patients} navigation={navigation} />
 					</View>
 				</View>
-				<Button title="Reset" onPress={handleDrop} />
+				{/* <Button title="Reset" onPress={handleDrop} /> */}
 				<Button
 					title="Register a patient"
 					onPress={() => navigation.navigate("Registration")}

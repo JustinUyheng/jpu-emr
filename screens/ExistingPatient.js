@@ -6,7 +6,6 @@ import {
 	Alert,
 	Button,
 	Keyboard,
-	KeyboardAvoidingView,
 	Modal,
 	Pressable,
 	Text,
