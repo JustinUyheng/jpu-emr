@@ -1,24 +1,14 @@
-import { useEffect, useState } from "react";
 import { StyleSheet } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Home from "./screens/Home";
 import Registration from "./screens/Registration";
-import PatientDatabase from "./components/PatientDatabase";
 import ExistingPatient from "./screens/ExistingPatient";
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
 	return (
-		// <View style={styles.container}>
-		// 	<View style={styles.patientsWrapper}>
-		// 		<Text style={styles.sectionTitle}>My Patients</Text>
-		// 		<View style={styles.items}>
-		// 			<Patient />
-		// 		</View>
-		// 	</View>
-		// </View>
 		<NavigationContainer>
 			<Stack.Navigator>
 				<Stack.Screen

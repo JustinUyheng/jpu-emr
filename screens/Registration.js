@@ -89,14 +89,6 @@ const Registration = ({ navigation }) => {
 						treatment_plan: currentTreatmentPlan,
 					});
 					setPatients(existingPatients);
-					setCurrentName(undefined);
-					setCurrentAge(undefined);
-					setCurrentContactNumber(undefined);
-					setCurrentAllergyHistory(undefined);
-					setCurrentMedicalHistory(undefined);
-					setCurrentMedication(undefined);
-					setCurrentProblem(undefined);
-					setCurrentTreatmentPlan(undefined);
 				},
 				(txObj, error) => console.log(error)
 			);
@@ -154,14 +146,6 @@ const Registration = ({ navigation }) => {
 						existingPatients[indexToUpdate].treatment_plan =
 							currentTreatmentPlan;
 						setPatients(existingPatients);
-						setCurrentName(undefined);
-						setCurrentAge(undefined);
-						setCurrentContactNumber(undefined);
-						setCurrentAllergyHistory(undefined);
-						setCurrentMedicalHistory(undefined);
-						setCurrentMedication(undefined);
-						setCurrentProblem(undefined);
-						setCurrentTreatmentPlan(undefined);
 					}
 				},
 				(txObj, error) => console.log(error)

@@ -53,7 +53,7 @@ const ExistingPatient = ({ route, navigation }) => {
 					setCurrentAllergyHistory(currentPatient.allergy_history);
 					setCurrentMedicalHistory(currentPatient.medical_history);
 					setCurrentMedication(currentPatient.medication);
-					setCurrentProblem(currentPatient.currentProblem);
+					setCurrentProblem(currentPatient.problem);
 					setCurrentTreatmentPlan(currentPatient.treatment_plan);
 				},
 				(txObj, error) => console.log(error)
@@ -62,48 +62,6 @@ const ExistingPatient = ({ route, navigation }) => {
 			setIsLoading(false);
 		});
 	}, []);
-
-	const addPatient = () => {
-		db.transaction((tx) => {
-			tx.executeSql(
-				`INSERT INTO patients (
-					name, 
-					age,
-					contact_number,
-					allergy_history,
-					medical_history,
-					medication,
-					problem,
-					treatment_plan
-				) values (?, ?, ?, ?, ?, ?, ?, ?)`,
-				[currentName],
-				(txObj, resultSet) => {
-					let existingPatients = [...patients];
-					existingPatients.push({
-						id: resultSet.insertId,
-						name: currentName,
-						age: currentAge,
-						contact_number: currentContactNumber,
-						allergy_history: currentAllergyHistory,
-						medical_history: currentMedicalHistory,
-						medication: currentMedication,
-						problem: currentProblem,
-						treatment_plan: currentTreatmentPlan,
-					});
-					setPatients(existingPatients);
-					setCurrentName(undefined);
-					setCurrentAge(undefined);
-					setCurrentContactNumber(undefined);
-					setCurrentAllergyHistory(undefined);
-					setCurrentMedicalHistory(undefined);
-					setCurrentMedication(undefined);
-					setCurrentProblem(undefined);
-					setCurrentTreatmentPlan(undefined);
-				},
-				(txObj, error) => console.log(error)
-			);
-		});
-	};
 
 	const deletePatient = (id) => {
 		db.transaction((tx) => {
@@ -166,14 +124,6 @@ const ExistingPatient = ({ route, navigation }) => {
 						existingPatients[indexToUpdate].treatment_plan =
 							currentTreatmentPlan;
 						setPatients(existingPatients);
-						// setCurrentName(undefined);
-						// setCurrentAge(undefined);
-						// setCurrentContactNumber(undefined);
-						// setCurrentAllergyHistory(undefined);
-						// setCurrentMedicalHistory(undefined);
-						// setCurrentMedication(undefined);
-						// setCurrentProblem(undefined);
-						// setCurrentTreatmentPlan(undefined);
 					}
 				},
 				(txObj, error) => console.log(error)
