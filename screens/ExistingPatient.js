@@ -1,16 +1,16 @@
 import { useState, useEffect } from "react";
 import * as SQLite from "expo-sqlite";
 import {
-	StyleSheet,
-	View,
 	Alert,
 	Button,
 	Keyboard,
 	Modal,
 	Pressable,
+	StyleSheet,
 	Text,
 	TextInput,
 	TouchableWithoutFeedback,
+	View,
 } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
@@ -214,12 +214,19 @@ const ExistingPatient = ({ route, navigation }) => {
 								placeholder="Treatment Plan"
 								onChangeText={setCurrentTreatmentPlan}
 							/>
-							<Button title="Save" onPress={() => handleSave(patientId)} />
-							<Button
-								title="Delete"
-								onPress={() => setModalVisible(true)}
-								color="red"
-							/>
+							<View style={styles.patientActions}>
+								<Button
+									style={styles.button}
+									title="Save"
+									onPress={() => handleSave(patientId)}
+								/>
+								<Button
+									style={styles.button}
+									title="Delete"
+									onPress={() => setModalVisible(true)}
+									color="red"
+								/>
+							</View>
 							<Modal
 								animationType="slide"
 								transparent={true}
@@ -283,6 +290,11 @@ const styles = StyleSheet.create({
 		borderWidth: 0.8,
 		padding: 8,
 	},
+	patientActions: {
+		marginTop: 16,
+		flexDirection: "row",
+		justifyContent: "space-between",
+	},
 	centeredView: {
 		flex: 1,
 		justifyContent: "center",
@@ -317,9 +329,11 @@ const styles = StyleSheet.create({
 	},
 	buttonCancel: {
 		backgroundColor: "#ff0000",
+		margin: 8,
 	},
 	buttonConfirm: {
 		backgroundColor: "#2196F3",
+		margin: 8,
 	},
 	textStyle: {
 		color: "white",

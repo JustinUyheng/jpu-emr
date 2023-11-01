@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
 import * as SQLite from "expo-sqlite";
 import {
-	Button,
 	Keyboard,
 	StyleSheet,
 	Text,
@@ -53,18 +52,6 @@ const Home = ({ navigation }) => {
 		);
 	}
 
-	const handleDrop = () => {
-		db.transaction((tx) => {
-			tx.executeSql(
-				"DROP TABLE patients",
-				null,
-				(txObj, resultSet) => console.log(resultSet),
-				(txObj, error) => console.log(error)
-			);
-		});
-		console.log("Dropped db");
-	};
-
 	return (
 		<TouchableWithoutFeedback
 			onPress={() => {
@@ -74,21 +61,12 @@ const Home = ({ navigation }) => {
 			<View style={styles.container}>
 				<StatusBar style="auto" />
 				<View style={styles.contentWrapper}>
-					<View>
+					<View style={styles.list}>
 						<Text style={styles.sectionTitle}>My Patients</Text>
-						<View style={styles.list}>
-							<PatientList patients={patients} navigation={navigation} />
-						</View>
+						<PatientList patients={patients} navigation={navigation} />
 					</View>
-					<View>
-						<Button
-							title="Register a patient"
-							style={styles.registrationButton}
-							onPress={() => navigation.navigate("Registration")}
-						/>
-					</View>
+					<View style={styles.spacing}></View>
 				</View>
-				{/* <Button title="Reset" onPress={handleDrop} /> */}
 			</View>
 		</TouchableWithoutFeedback>
 	);
@@ -97,11 +75,11 @@ const Home = ({ navigation }) => {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: "#e8eaed",
+		backgroundColor: "#f1f2ff",
+		paddingBottom: 50,
 	},
 	contentWrapper: {
 		flex: 1,
-		justifyContent: "space-between",
 		paddingTop: 40,
 		paddingHorizontal: 20,
 	},
@@ -116,8 +94,13 @@ const styles = StyleSheet.create({
 		marginHorizontal: 16,
 		borderWidth: 1,
 	},
-	registrationButton: {
-		width: "100%",
+	list: {
+		flex: 1,
+		paddingBottom: 10,
+	},
+	spacing: {
+		flex: 0.3,
+		padding: 5,
 	},
 });
 
