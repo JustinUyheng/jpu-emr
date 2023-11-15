@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import * as SQLite from "expo-sqlite";
 import {
 	fetchPatients,
 	fetchPatientById,
@@ -23,7 +22,6 @@ import Loading from "../components/Loading";
 
 const ExistingPatient = ({ route, navigation }) => {
 	const { patientId, patientName } = route.params;
-	const db = SQLite.openDatabase("example.db");
 	const [isLoading, setIsLoading] = useState(true);
 	const [modalVisible, setModalVisible] = useState(false);
 	const [patients, setPatients] = useState([]);
@@ -39,9 +37,12 @@ const ExistingPatient = ({ route, navigation }) => {
 	});
 
 	useEffect(() => {
-		fetchPatients(db, setPatients);
-		fetchPatientById(db, patientId, setForm);
-		setIsLoading(false);
+		try {
+			fetchPatientById(patientId, setForm, setPatients);
+			setIsLoading(false);
+		} catch (error) {
+			console.log(error);
+		}
 	}, []);
 
 	const handleChange = (key, value) => {
@@ -52,12 +53,12 @@ const ExistingPatient = ({ route, navigation }) => {
 	};
 
 	const handleSave = (id) => {
-		updatePatient(db, form, id, patients, setPatients);
+		updatePatient(form, id, patients, setPatients);
 		navigation.popToTop();
 	};
 
 	const handleDelete = (id) => {
-		deletePatient(db, id, patients, setPatients);
+		deletePatient(id, patients, setPatients);
 		navigation.popToTop();
 	};
 

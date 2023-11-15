@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import * as SQLite from "expo-sqlite";
 import {
 	initPatientDatabase,
 	fetchPatients,
@@ -17,7 +16,6 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import Loading from "../components/Loading";
 
 const Registration = ({ navigation }) => {
-	const db = SQLite.openDatabase("example.db");
 	const [isLoading, setIsLoading] = useState(true);
 	const [patients, setPatients] = useState([]);
 	const [form, setForm] = useState({
@@ -32,8 +30,8 @@ const Registration = ({ navigation }) => {
 	});
 
 	useEffect(() => {
-		initPatientDatabase(db);
-		fetchPatients(db, setPatients);
+		initPatientDatabase();
+		fetchPatients(setPatients);
 		setIsLoading(false);
 	}, []);
 
@@ -45,7 +43,7 @@ const Registration = ({ navigation }) => {
 	};
 
 	const handleSave = () => {
-		insertPatient(db, form, patients, setPatients);
+		insertPatient(form, patients, setPatients);
 		navigation.popToTop();
 	};
 

@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
-import * as SQLite from "expo-sqlite";
 import {
 	Keyboard,
 	StyleSheet,
@@ -13,13 +12,12 @@ import PatientList from "../components/PatientList";
 import { fetchPatients, initPatientDatabase } from "../utils/transactions";
 
 const Home = ({ navigation }) => {
-	const db = SQLite.openDatabase("example.db");
 	const [isLoading, setIsLoading] = useState(true);
 	const [patients, setPatients] = useState([]);
 
 	useEffect(() => {
-		initPatientDatabase(db);
-		fetchPatients(db, setPatients);
+		initPatientDatabase();
+		fetchPatients(setPatients);
 		setIsLoading(false);
 	}, [patients]);
 

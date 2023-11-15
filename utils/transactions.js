@@ -1,6 +1,9 @@
+import * as SQLite from "expo-sqlite";
 import { stringifyValues } from "./stringify";
 
-export const initPatientDatabase = (db) => {
+const db = SQLite.openDatabase("example.db");
+
+export const initPatientDatabase = () => {
 	db.transaction((tx) => {
 		tx.executeSql(
 			`CREATE TABLE IF NOT EXISTS patients (
@@ -18,7 +21,7 @@ export const initPatientDatabase = (db) => {
 	});
 };
 
-export const fetchPatients = (db, setPatients) => {
+export const fetchPatients = (setPatients) => {
 	db.transaction((tx) => {
 		tx.executeSql(
 			"SELECT * FROM patients",
@@ -29,7 +32,8 @@ export const fetchPatients = (db, setPatients) => {
 	});
 };
 
-export const fetchPatientById = (db, patientId, setForm) => {
+export const fetchPatientById = (patientId, setForm, setPatients) => {
+	fetchPatients(setPatients);
 	db.transaction((tx) => {
 		tx.executeSql(
 			"SELECT * FROM patients WHERE id = ?",
@@ -47,7 +51,7 @@ export const fetchPatientById = (db, patientId, setForm) => {
 	});
 };
 
-export const insertPatient = (db, form, patients, setPatients) => {
+export const insertPatient = (form, patients, setPatients) => {
 	db.transaction((tx) => {
 		tx.executeSql(
 			`INSERT INTO patients (
@@ -90,7 +94,7 @@ export const insertPatient = (db, form, patients, setPatients) => {
 	});
 };
 
-export const updatePatient = (db, form, id, patients, setPatients) => {
+export const updatePatient = (form, id, patients, setPatients) => {
 	db.transaction((tx) => {
 		tx.executeSql(
 			`UPDATE patients SET 
@@ -126,7 +130,7 @@ export const updatePatient = (db, form, id, patients, setPatients) => {
 	});
 };
 
-export const deletePatient = (db, id, patients, setPatients) => {
+export const deletePatient = (id, patients, setPatients) => {
 	db.transaction((tx) => {
 		tx.executeSql(
 			"DELETE FROM patients WHERE id = ?",
