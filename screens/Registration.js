@@ -1,6 +1,10 @@
 import { useState, useEffect } from "react";
 import * as SQLite from "expo-sqlite";
-import { initData, fetchData, insertData } from "../utils/transactions";
+import {
+	initPatientDatabase,
+	fetchPatients,
+	insertPatient,
+} from "../utils/transactions";
 import {
 	Button,
 	Keyboard,
@@ -18,22 +22,19 @@ const Registration = ({ navigation }) => {
 	const [form, setForm] = useState({
 		name: "",
 		age: "",
-		contactNumber: "",
-		allergyHistory: "",
-		medicalHistory: "",
-		currentMedication: "",
-		currentProblem: "",
-		treatmentPlan: "",
+		contact_number: "",
+		allergy_history: "",
+		medical_history: "",
+		medication: "",
+		problem: "",
+		treatment_plan: "",
 	});
 
 	useEffect(() => {
-		initData(db);
-		fetchData(db, setPatients, setIsLoading);
+		initPatientDatabase(db);
+		fetchPatients(db, setPatients);
+		setIsLoading(false);
 	}, []);
-
-	const addPatient = () => {
-		insertData(db, form, patients, setPatients);
-	};
 
 	const handleChange = (key, value) => {
 		setForm({
@@ -43,7 +44,7 @@ const Registration = ({ navigation }) => {
 	};
 
 	const handleSave = () => {
-		addPatient();
+		insertPatient(db, form, patients, setPatients);
 		navigation.popToTop();
 	};
 
@@ -70,9 +71,9 @@ const Registration = ({ navigation }) => {
 					/>
 					<TextInput
 						style={styles.input}
-						value={form.contactNumber}
+						value={form.contact_number}
 						placeholder="Contact Number"
-						onChangeText={(text) => handleChange("contactNumber", text)}
+						onChangeText={(text) => handleChange("contact_number", text)}
 						inputMode="tel"
 					/>
 					<TextInput
@@ -80,45 +81,45 @@ const Registration = ({ navigation }) => {
 						editable
 						multiline
 						numberOfLines={3}
-						value={form.allergyHistory}
+						value={form.allergy_history}
 						placeholder="Allergy History"
-						onChangeText={(text) => handleChange("allergyHistory", text)}
+						onChangeText={(text) => handleChange("allergy_history", text)}
 					/>
 					<TextInput
 						style={styles.input}
 						editable
 						multiline
 						numberOfLines={3}
-						value={form.medicalHistory}
+						value={form.medical_history}
 						placeholder="Medical History"
-						onChangeText={(text) => handleChange("medicalHistory", text)}
+						onChangeText={(text) => handleChange("medical_history", text)}
 					/>
 					<TextInput
 						style={styles.input}
 						editable
 						multiline
 						numberOfLines={3}
-						value={form.currentMedication}
+						value={form.current_medication}
 						placeholder="Current Medication"
-						onChangeText={(text) => handleChange("currentMedication", text)}
+						onChangeText={(text) => handleChange("current_medication", text)}
 					/>
 					<TextInput
 						style={styles.input}
 						editable
 						multiline
 						numberOfLines={3}
-						value={form.currentProblem}
+						value={form.current_problem}
 						placeholder="Current Problem"
-						onChangeText={(text) => handleChange("currentProblem", text)}
+						onChangeText={(text) => handleChange("current_problem", text)}
 					/>
 					<TextInput
 						style={styles.input}
 						editable
 						multiline
 						numberOfLines={3}
-						value={form.treatmentPlan}
+						value={form.treatment_plan}
 						placeholder="Treatment Plan"
-						onChangeText={(text) => handleChange("treatmentPlan", text)}
+						onChangeText={(text) => handleChange("treatment_plan", text)}
 					/>
 					<Button title="Save" onPress={handleSave} />
 				</View>

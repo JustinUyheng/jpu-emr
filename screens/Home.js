@@ -9,6 +9,7 @@ import {
 	View,
 } from "react-native";
 import PatientList from "../components/PatientList";
+import { fetchPatients, initPatientDatabase } from "../utils/transactions";
 
 const Home = ({ navigation }) => {
 	const db = SQLite.openDatabase("example.db");
@@ -16,32 +17,9 @@ const Home = ({ navigation }) => {
 	const [patients, setPatients] = useState([]);
 
 	useEffect(() => {
-		db.transaction((tx) => {
-			tx.executeSql(
-				`CREATE TABLE IF NOT EXISTS patients (
-					id INTEGER PRIMARY KEY AUTOINCREMENT, 
-					name TEXT,
-					age INTEGER, 
-					contact_number TEXT, 
-					allergy_history TEXT, 
-					medical_history TEXT,
-					medication TEXT,
-					problem TEXT,
-					treatment_plan TEXT
-				)`
-			);
-		});
-
-		db.transaction((tx) => {
-			tx.executeSql(
-				"SELECT * FROM patients",
-				null,
-				(txObj, resultSet) => setPatients(resultSet.rows._array),
-				(txObj, error) => console.log(error)
-			);
-
-			setIsLoading(false);
-		});
+		initPatientDatabase(db);
+		fetchPatients(db, setPatients);
+		setIsLoading(false);
 	}, [patients]);
 
 	return (
