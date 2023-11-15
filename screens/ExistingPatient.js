@@ -152,14 +152,14 @@ const ExistingPatient = ({ route, navigation }) => {
 									<View style={styles.patientActions}>
 										<Button
 											style={styles.button}
-											title="Save"
-											onPress={() => handleSave(patientId)}
-										/>
-										<Button
-											style={styles.button}
 											title="Delete"
 											onPress={() => setModalVisible(true)}
 											color="red"
+										/>
+										<Button
+											style={styles.button}
+											title="Save"
+											onPress={() => handleSave(patientId)}
 										/>
 									</View>
 									<Modal
@@ -241,7 +241,6 @@ const styles = StyleSheet.create({
 	modalView: {
 		margin: 20,
 		backgroundColor: "white",
-		borderRadius: 20,
 		padding: 35,
 		alignItems: "center",
 		shadowColor: "#000",
@@ -254,7 +253,6 @@ const styles = StyleSheet.create({
 		elevation: 5,
 	},
 	button: {
-		borderRadius: 20,
 		padding: 10,
 		elevation: 2,
 	},
