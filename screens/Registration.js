@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import * as SQLite from "expo-sqlite";
+import { initData, fetchData, insertData } from "../utils/transactions";
 import {
 	Button,
 	Keyboard,
@@ -14,142 +15,30 @@ const Registration = ({ navigation }) => {
 	const db = SQLite.openDatabase("example.db");
 	const [isLoading, setIsLoading] = useState(true);
 	const [patients, setPatients] = useState([]);
-	const [currentName, setCurrentName] = useState(undefined);
-	const [currentAge, setCurrentAge] = useState(undefined);
-	const [currentContactNumber, setCurrentContactNumber] = useState(undefined);
-	const [currentAllergyHistory, setCurrentAllergyHistory] = useState(undefined);
-	const [currentMedicalHistory, setCurrentMedicalHistory] = useState(undefined);
-	const [currentMedication, setCurrentMedication] = useState(undefined);
-	const [currentProblem, setCurrentProblem] = useState(undefined);
-	const [currentTreatmentPlan, setCurrentTreatmentPlan] = useState(undefined);
+	const [form, setForm] = useState({
+		name: "",
+		age: "",
+		contactNumber: "",
+		allergyHistory: "",
+		medicalHistory: "",
+		currentMedication: "",
+		currentProblem: "",
+		treatmentPlan: "",
+	});
 
 	useEffect(() => {
-		db.transaction((tx) => {
-			tx.executeSql(
-				`CREATE TABLE IF NOT EXISTS patients (
-					id INTEGER PRIMARY KEY AUTOINCREMENT, 
-					name TEXT, 
-					age INTEGER, 
-					contact_number TEXT, 
-					allergy_history TEXT, 
-					medical_history TEXT,
-					medication TEXT,
-					problem TEXT,
-					treatment_plan TEXT
-				)`
-			);
-		});
-
-		db.transaction((tx) => {
-			tx.executeSql(
-				"SELECT * FROM patients",
-				null,
-				(txObj, resultSet) => setPatients(resultSet.rows._array),
-				(txObj, error) => console.log(error)
-			);
-
-			setIsLoading(false);
-		});
+		initData(db);
+		fetchData(db, setPatients, setIsLoading);
 	}, []);
 
 	const addPatient = () => {
-		db.transaction((tx) => {
-			tx.executeSql(
-				`INSERT INTO patients (
-					name, 
-					age,
-					contact_number,
-					allergy_history,
-					medical_history,
-					medication,
-					problem,
-					treatment_plan
-				) values (?, ?, ?, ?, ?, ?, ?, ?)`,
-				[
-					currentName,
-					currentAge,
-					currentContactNumber,
-					currentAllergyHistory,
-					currentMedicalHistory,
-					currentMedication,
-					currentProblem,
-					currentTreatmentPlan,
-				],
-				(txObj, resultSet) => {
-					let existingPatients = [...patients];
-					existingPatients.push({
-						id: resultSet.insertId,
-						name: currentName,
-						age: currentAge,
-						contact_number: currentContactNumber,
-						allergy_history: currentAllergyHistory,
-						medical_history: currentMedicalHistory,
-						medication: currentMedication,
-						problem: currentProblem,
-						treatment_plan: currentTreatmentPlan,
-					});
-					setPatients(existingPatients);
-				},
-				(txObj, error) => console.log(error)
-			);
-		});
+		insertData(db, form, patients, setPatients);
 	};
 
-	const deletePatient = (id) => {
-		db.transaction((tx) => {
-			tx.executeSql(
-				"DELETE FROM patients WHERE id = ?",
-				[id],
-				(txObj, resultSet) => {
-					if (resultSet.rowsAffected > 0) {
-						let existingPatients = [...patients].filter(
-							(patient) => patient.id !== id
-						);
-						setPatients(existingPatients);
-					}
-				},
-				(txObj, error) => console.log(error)
-			);
-		});
-	};
-
-	const updatePatient = (id) => {
-		db.transaction((tx) => {
-			tx.executeSql(
-				`UPDATE patients SET 
-					name = ?,
-					age = ?,
-					contact_number = ?,
-					allergy_history = ?,
-					medical_history = ?,
-					medication = ?,
-					problem = ?,
-					treatment_plan = ?
-					WHERE id = ?`,
-				[currentName, id],
-				(txObj, resultSet) => {
-					if (resultSet.rowsAffected > 0) {
-						let existingPatients = [...patients];
-						const indexToUpdate = existingPatients.findIndex(
-							(patient) => patient.id === id
-						);
-						existingPatients[indexToUpdate].name = currentName;
-						existingPatients[indexToUpdate].age = currentAge;
-						existingPatients[indexToUpdate].contact_number =
-							currentContactNumber;
-						existingPatients[indexToUpdate].allergy_history =
-							currentAllergyHistory;
-						existingPatients[indexToUpdate].medical_history =
-							currentMedicalHistory;
-						existingPatients[indexToUpdate].medication = currentMedication;
-						existingPatients[indexToUpdate].problem = currentProblem;
-						existingPatients[indexToUpdate].treatment_plan =
-							currentTreatmentPlan;
-						setPatients(existingPatients);
-					}
-				},
-				(txObj, error) => console.log(error)
-			);
+	const handleChange = (key, value) => {
+		setForm({
+			...form,
+			[key]: value,
 		});
 	};
 
@@ -168,22 +57,22 @@ const Registration = ({ navigation }) => {
 				<View style={styles.patientsWrapper}>
 					<TextInput
 						style={styles.input}
-						value={currentName}
+						value={form.name}
 						placeholder="Name"
-						onChangeText={setCurrentName}
+						onChangeText={(text) => handleChange("name", text)}
 					/>
 					<TextInput
 						style={styles.input}
-						value={currentAge}
+						value={form.age}
 						placeholder="Age"
-						onChangeText={setCurrentAge}
+						onChangeText={(text) => handleChange("age", text)}
 						inputMode="numeric"
 					/>
 					<TextInput
 						style={styles.input}
-						value={currentContactNumber}
+						value={form.contactNumber}
 						placeholder="Contact Number"
-						onChangeText={setCurrentContactNumber}
+						onChangeText={(text) => handleChange("contactNumber", text)}
 						inputMode="tel"
 					/>
 					<TextInput
@@ -191,45 +80,45 @@ const Registration = ({ navigation }) => {
 						editable
 						multiline
 						numberOfLines={3}
-						value={currentAllergyHistory}
+						value={form.allergyHistory}
 						placeholder="Allergy History"
-						onChangeText={setCurrentAllergyHistory}
+						onChangeText={(text) => handleChange("allergyHistory", text)}
 					/>
 					<TextInput
 						style={styles.input}
 						editable
 						multiline
 						numberOfLines={3}
-						value={currentMedicalHistory}
+						value={form.medicalHistory}
 						placeholder="Medical History"
-						onChangeText={setCurrentMedicalHistory}
+						onChangeText={(text) => handleChange("medicalHistory", text)}
 					/>
 					<TextInput
 						style={styles.input}
 						editable
 						multiline
 						numberOfLines={3}
-						value={currentMedication}
+						value={form.currentMedication}
 						placeholder="Current Medication"
-						onChangeText={setCurrentMedication}
+						onChangeText={(text) => handleChange("currentMedication", text)}
 					/>
 					<TextInput
 						style={styles.input}
 						editable
 						multiline
 						numberOfLines={3}
-						value={currentProblem}
+						value={form.currentProblem}
 						placeholder="Current Problem"
-						onChangeText={setCurrentProblem}
+						onChangeText={(text) => handleChange("currentProblem", text)}
 					/>
 					<TextInput
 						style={styles.input}
 						editable
 						multiline
 						numberOfLines={3}
-						value={currentTreatmentPlan}
+						value={form.treatmentPlan}
 						placeholder="Treatment Plan"
-						onChangeText={setCurrentTreatmentPlan}
+						onChangeText={(text) => handleChange("treatmentPlan", text)}
 					/>
 					<Button title="Save" onPress={handleSave} />
 				</View>
