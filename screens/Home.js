@@ -44,31 +44,31 @@ const Home = ({ navigation }) => {
 		});
 	}, [patients]);
 
-	if (isLoading) {
-		return (
-			<View styles={styles.container}>
-				<Text>Loading patients...</Text>
-			</View>
-		);
-	}
-
 	return (
-		<TouchableWithoutFeedback
-			onPress={() => {
-				Keyboard.dismiss();
-			}}
-		>
-			<View style={styles.container}>
-				<StatusBar style="auto" />
-				<View style={styles.contentWrapper}>
-					<View style={styles.list}>
-						<Text style={styles.sectionTitle}>My Patients</Text>
-						<PatientList patients={patients} navigation={navigation} />
-					</View>
-					<View style={styles.spacing}></View>
+		<>
+			{isLoading ? (
+				<View styles={styles.container}>
+					<Text>Loading patients...</Text>
 				</View>
-			</View>
-		</TouchableWithoutFeedback>
+			) : (
+				<TouchableWithoutFeedback
+					onPress={() => {
+						Keyboard.dismiss();
+					}}
+				>
+					<View style={styles.container}>
+						<StatusBar style="auto" />
+						<View style={styles.contentWrapper}>
+							<View style={styles.list}>
+								<Text style={styles.sectionTitle}>My Patients</Text>
+								<PatientList patients={patients} navigation={navigation} />
+							</View>
+							<View style={styles.spacing}></View>
+						</View>
+					</View>
+				</TouchableWithoutFeedback>
+			)}
+		</>
 	);
 };
 
