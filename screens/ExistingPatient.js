@@ -19,6 +19,7 @@ import {
 	View,
 } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import Loading from "../components/Loading";
 
 const ExistingPatient = ({ route, navigation }) => {
 	const { patientId, patientName } = route.params;
@@ -61,129 +62,143 @@ const ExistingPatient = ({ route, navigation }) => {
 	};
 
 	return (
-		<KeyboardAwareScrollView style={styles.container}>
-			{!isLoading && (
-				<View>
-					<TouchableWithoutFeedback
-						onPress={() => {
-							Keyboard.dismiss();
-						}}
-					>
-						<View style={styles.patientsWrapper}>
-							<TextInput
-								style={styles.input}
-								value={form.name}
-								placeholder="Name"
-								onChangeText={(text) => handleChange("name", text)}
-							/>
-							<TextInput
-								style={styles.input}
-								value={form.age}
-								placeholder="Age"
-								onChangeText={(text) => handleChange("age", text)}
-								inputMode="numeric"
-							/>
-							<TextInput
-								style={styles.input}
-								value={form.contact_number}
-								placeholder="Contact Number"
-								onChangeText={(text) => handleChange("contact_number", text)}
-								inputMode="tel"
-							/>
-							<TextInput
-								style={styles.input}
-								editable
-								multiline
-								numberOfLines={3}
-								value={form.allergy_history}
-								placeholder="Allergy History"
-								onChangeText={(text) => handleChange("allergy_history", text)}
-							/>
-							<TextInput
-								style={styles.input}
-								editable
-								multiline
-								numberOfLines={3}
-								value={form.medical_history}
-								placeholder="Medical History"
-								onChangeText={(text) => handleChange("medical_history", text)}
-							/>
-							<TextInput
-								style={styles.input}
-								editable
-								multiline
-								numberOfLines={3}
-								value={form.medication}
-								placeholder="Current Medication"
-								onChangeText={(text) => handleChange("medication", text)}
-							/>
-							<TextInput
-								style={styles.input}
-								editable
-								multiline
-								numberOfLines={3}
-								value={form.problem}
-								placeholder="Current Problem"
-								onChangeText={(text) => handleChange("problem", text)}
-							/>
-							<TextInput
-								style={styles.input}
-								editable
-								multiline
-								numberOfLines={3}
-								value={form.treatment_plan}
-								placeholder="Treatment Plan"
-								onChangeText={(text) => handleChange("treatment_plan", text)}
-							/>
-							<View style={styles.patientActions}>
-								<Button
-									style={styles.button}
-									title="Save"
-									onPress={() => handleSave(patientId)}
-								/>
-								<Button
-									style={styles.button}
-									title="Delete"
-									onPress={() => setModalVisible(true)}
-									color="red"
-								/>
-							</View>
-							<Modal
-								animationType="slide"
-								transparent={true}
-								visible={modalVisible}
-								onRequestClose={() => {
-									Alert.alert("Modal has been closed.");
-									setModalVisible(!modalVisible);
+		<>
+			{isLoading ? (
+				<Loading />
+			) : (
+				<KeyboardAwareScrollView style={styles.container}>
+					{!isLoading && (
+						<View>
+							<TouchableWithoutFeedback
+								onPress={() => {
+									Keyboard.dismiss();
 								}}
 							>
-								<View style={styles.centeredView}>
-									<View style={styles.modalView}>
-										<Text style={styles.modalText}>
-											Are you sure you want to delete this patient record?
-										</Text>
-										<View style={styles.modalButtons}>
-											<Pressable
-												style={[styles.button, styles.buttonCancel]}
-												onPress={() => setModalVisible(!modalVisible)}
-											>
-												<Text style={styles.textStyle}>Cancel</Text>
-											</Pressable>
-											<Pressable
-												style={[styles.button, styles.buttonConfirm]}
-												onPress={() => handleDelete(patientId)}
-											>
-												<Text style={styles.textStyle}>Confirm</Text>
-											</Pressable>
-										</View>
+								<View style={styles.patientsWrapper}>
+									<TextInput
+										style={styles.input}
+										value={form.name}
+										placeholder="Name"
+										onChangeText={(text) => handleChange("name", text)}
+									/>
+									<TextInput
+										style={styles.input}
+										value={form.age}
+										placeholder="Age"
+										onChangeText={(text) => handleChange("age", text)}
+										inputMode="numeric"
+									/>
+									<TextInput
+										style={styles.input}
+										value={form.contact_number}
+										placeholder="Contact Number"
+										onChangeText={(text) =>
+											handleChange("contact_number", text)
+										}
+										inputMode="tel"
+									/>
+									<TextInput
+										style={styles.input}
+										editable
+										multiline
+										numberOfLines={3}
+										value={form.allergy_history}
+										placeholder="Allergy History"
+										onChangeText={(text) =>
+											handleChange("allergy_history", text)
+										}
+									/>
+									<TextInput
+										style={styles.input}
+										editable
+										multiline
+										numberOfLines={3}
+										value={form.medical_history}
+										placeholder="Medical History"
+										onChangeText={(text) =>
+											handleChange("medical_history", text)
+										}
+									/>
+									<TextInput
+										style={styles.input}
+										editable
+										multiline
+										numberOfLines={3}
+										value={form.medication}
+										placeholder="Current Medication"
+										onChangeText={(text) => handleChange("medication", text)}
+									/>
+									<TextInput
+										style={styles.input}
+										editable
+										multiline
+										numberOfLines={3}
+										value={form.problem}
+										placeholder="Current Problem"
+										onChangeText={(text) => handleChange("problem", text)}
+									/>
+									<TextInput
+										style={styles.input}
+										editable
+										multiline
+										numberOfLines={3}
+										value={form.treatment_plan}
+										placeholder="Treatment Plan"
+										onChangeText={(text) =>
+											handleChange("treatment_plan", text)
+										}
+									/>
+									<View style={styles.patientActions}>
+										<Button
+											style={styles.button}
+											title="Save"
+											onPress={() => handleSave(patientId)}
+										/>
+										<Button
+											style={styles.button}
+											title="Delete"
+											onPress={() => setModalVisible(true)}
+											color="red"
+										/>
 									</View>
+									<Modal
+										animationType="slide"
+										transparent={true}
+										visible={modalVisible}
+										onRequestClose={() => {
+											Alert.alert("Modal has been closed.");
+											setModalVisible(!modalVisible);
+										}}
+									>
+										<View style={styles.centeredView}>
+											<View style={styles.modalView}>
+												<Text style={styles.modalText}>
+													Are you sure you want to delete this patient record?
+												</Text>
+												<View style={styles.modalButtons}>
+													<Pressable
+														style={[styles.button, styles.buttonCancel]}
+														onPress={() => setModalVisible(!modalVisible)}
+													>
+														<Text style={styles.textStyle}>Cancel</Text>
+													</Pressable>
+													<Pressable
+														style={[styles.button, styles.buttonConfirm]}
+														onPress={() => handleDelete(patientId)}
+													>
+														<Text style={styles.textStyle}>Confirm</Text>
+													</Pressable>
+												</View>
+											</View>
+										</View>
+									</Modal>
 								</View>
-							</Modal>
+							</TouchableWithoutFeedback>
 						</View>
-					</TouchableWithoutFeedback>
-				</View>
+					)}
+				</KeyboardAwareScrollView>
 			)}
-		</KeyboardAwareScrollView>
+		</>
 	);
 };
 

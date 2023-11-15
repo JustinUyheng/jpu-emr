@@ -14,6 +14,7 @@ import {
 	View,
 } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import Loading from "../components/Loading";
 
 const Registration = ({ navigation }) => {
 	const db = SQLite.openDatabase("example.db");
@@ -49,82 +50,90 @@ const Registration = ({ navigation }) => {
 	};
 
 	return (
-		<KeyboardAwareScrollView style={styles.container}>
-			<TouchableWithoutFeedback
-				onPress={() => {
-					Keyboard.dismiss();
-				}}
-			>
-				<View style={styles.patientsWrapper}>
-					<TextInput
-						style={styles.input}
-						value={form.name}
-						placeholder="Name"
-						onChangeText={(text) => handleChange("name", text)}
-					/>
-					<TextInput
-						style={styles.input}
-						value={form.age}
-						placeholder="Age"
-						onChangeText={(text) => handleChange("age", text)}
-						inputMode="numeric"
-					/>
-					<TextInput
-						style={styles.input}
-						value={form.contact_number}
-						placeholder="Contact Number"
-						onChangeText={(text) => handleChange("contact_number", text)}
-						inputMode="tel"
-					/>
-					<TextInput
-						style={styles.input}
-						editable
-						multiline
-						numberOfLines={3}
-						value={form.allergy_history}
-						placeholder="Allergy History"
-						onChangeText={(text) => handleChange("allergy_history", text)}
-					/>
-					<TextInput
-						style={styles.input}
-						editable
-						multiline
-						numberOfLines={3}
-						value={form.medical_history}
-						placeholder="Medical History"
-						onChangeText={(text) => handleChange("medical_history", text)}
-					/>
-					<TextInput
-						style={styles.input}
-						editable
-						multiline
-						numberOfLines={3}
-						value={form.current_medication}
-						placeholder="Current Medication"
-						onChangeText={(text) => handleChange("current_medication", text)}
-					/>
-					<TextInput
-						style={styles.input}
-						editable
-						multiline
-						numberOfLines={3}
-						value={form.current_problem}
-						placeholder="Current Problem"
-						onChangeText={(text) => handleChange("current_problem", text)}
-					/>
-					<TextInput
-						style={styles.input}
-						editable
-						multiline
-						numberOfLines={3}
-						value={form.treatment_plan}
-						placeholder="Treatment Plan"
-						onChangeText={(text) => handleChange("treatment_plan", text)}
-					/>
-					<Button title="Save" onPress={handleSave} />
-				</View>
-			</TouchableWithoutFeedback>
-		</KeyboardAwareScrollView>
+		<>
+			{isLoading ? (
+				<Loading />
+			) : (
+				<KeyboardAwareScrollView style={styles.container}>
+					<TouchableWithoutFeedback
+						onPress={() => {
+							Keyboard.dismiss();
+						}}
+					>
+						<View style={styles.patientsWrapper}>
+							<TextInput
+								style={styles.input}
+								value={form.name}
+								placeholder="Name"
+								onChangeText={(text) => handleChange("name", text)}
+							/>
+							<TextInput
+								style={styles.input}
+								value={form.age}
+								placeholder="Age"
+								onChangeText={(text) => handleChange("age", text)}
+								inputMode="numeric"
+							/>
+							<TextInput
+								style={styles.input}
+								value={form.contact_number}
+								placeholder="Contact Number"
+								onChangeText={(text) => handleChange("contact_number", text)}
+								inputMode="tel"
+							/>
+							<TextInput
+								style={styles.input}
+								editable
+								multiline
+								numberOfLines={3}
+								value={form.allergy_history}
+								placeholder="Allergy History"
+								onChangeText={(text) => handleChange("allergy_history", text)}
+							/>
+							<TextInput
+								style={styles.input}
+								editable
+								multiline
+								numberOfLines={3}
+								value={form.medical_history}
+								placeholder="Medical History"
+								onChangeText={(text) => handleChange("medical_history", text)}
+							/>
+							<TextInput
+								style={styles.input}
+								editable
+								multiline
+								numberOfLines={3}
+								value={form.current_medication}
+								placeholder="Current Medication"
+								onChangeText={(text) =>
+									handleChange("current_medication", text)
+								}
+							/>
+							<TextInput
+								style={styles.input}
+								editable
+								multiline
+								numberOfLines={3}
+								value={form.current_problem}
+								placeholder="Current Problem"
+								onChangeText={(text) => handleChange("current_problem", text)}
+							/>
+							<TextInput
+								style={styles.input}
+								editable
+								multiline
+								numberOfLines={3}
+								value={form.treatment_plan}
+								placeholder="Treatment Plan"
+								onChangeText={(text) => handleChange("treatment_plan", text)}
+							/>
+							<Button title="Save" onPress={handleSave} />
+						</View>
+					</TouchableWithoutFeedback>
+				</KeyboardAwareScrollView>
+			)}
+		</>
 	);
 };
 

@@ -8,6 +8,7 @@ import {
 	TouchableWithoutFeedback,
 	View,
 } from "react-native";
+import Loading from "../components/Loading";
 import PatientList from "../components/PatientList";
 import { fetchPatients, initPatientDatabase } from "../utils/transactions";
 
@@ -25,9 +26,7 @@ const Home = ({ navigation }) => {
 	return (
 		<>
 			{isLoading ? (
-				<View styles={styles.container}>
-					<Text>Loading patients...</Text>
-				</View>
+				<Loading />
 			) : (
 				<TouchableWithoutFeedback
 					onPress={() => {
